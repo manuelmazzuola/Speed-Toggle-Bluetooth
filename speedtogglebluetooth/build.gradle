@@ -1,0 +1,58 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots/'
+        }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.7.+'
+        classpath 'com.squareup.gradle:gradle-android-test-plugin:0.9.1-SNAPSHOT'
+    }
+}
+apply plugin: 'android'
+apply plugin: 'android-test'
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.0.0"
+
+    defaultConfig {
+        minSdkVersion 10
+        targetSdkVersion 19
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+    sourceSets.main.java.srcDirs =
+            ["src/main/java", "src/android-support-v4-preferencefragment/java"]
+    sourceSets.main.resources.srcDirs =
+            ["src/main/res"]
+}
+
+dependencies {
+
+    // You must install or update the Support Repository through the SDK manager to use this dependency.
+    // The Support Repository (separate from the corresponding library) can be found in the Extras category.
+    compile 'com.android.support:appcompat-v7:+'
+
+    testCompile 'junit:junit:4.10'
+    testCompile 'org.robolectric:robolectric:2.1.+'
+    testCompile 'com.squareup:fest-android:1.0.+'
+
+    instrumentTestCompile 'junit:junit:4.10'
+    instrumentTestCompile 'org.robolectric:robolectric:2.3-SNAPSHOT'
+    instrumentTestCompile 'com.squareup:fest-android:1.0.+'
+}
