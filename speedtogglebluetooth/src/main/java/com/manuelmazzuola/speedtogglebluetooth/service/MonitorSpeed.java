@@ -28,7 +28,7 @@ public class MonitorSpeed extends Service implements LocationListener {
     private int serviceReturnFlag = START_NOT_STICKY;
     private final String DEVICES = "devices";
     private final int intentId = 1988;
-    private final float triggerDistance = 312f;
+    private final float triggerDistance = 260f;
     private Location oldLocation;
     private LocationManager lm;
     private String provider;
