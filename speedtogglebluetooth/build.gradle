@@ -36,10 +36,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
-    sourceSets.main.java.srcDirs =
-            ["src/main/java", "src/android-support-v4-preferencefragment/java"]
-    sourceSets.main.resources.srcDirs =
-            ["src/main/res"]
 }
 
 dependencies {

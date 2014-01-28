@@ -41,3 +41,5 @@ gradlew.bat
 gradle/
 
 gradle.properties
+
+*.xcf

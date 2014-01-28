@@ -1,19 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">Speed Toggle Bluetooth</string>
-    <string name="hello_world">
-        Basically when the service is started, it monitors your movements, if you go fast the bluetooth service will be turned on and your car automatically connect to your smartphone.
-When you turn off the car, it will disconnect and if the device disconnected is the same selected in settings than bluetooth will be turned off.
-And so on.
-    </string>
-    <string name="action_settings">Settings</string>
-
-    <!--  Strings for possible PreferenceActivity Back/Next buttons -->
-    <string name="back_button_label">Back</string>
-    <string name="next_button_label">Next</string>
-
-    <!-- Optional button to Skip a PreferenceActivity [CHAR LIMIT=20] -->
-    <string name="skip_button_label">Skip</string>
-
+    <string name="service_is_running">Click to close the service</string>
+    <string name="service_already_running">Service already running</string>
+    <string name="starting_service">Starting service</string>
+    <string name="waiting_device">Waiting for device</string>
 </resources>
