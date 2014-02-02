@@ -36,6 +36,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 
 import com.manuelmazzuola.speedtogglebluetooth.MainActivity;
 import com.manuelmazzuola.speedtogglebluetooth.R;
@@ -53,25 +54,29 @@ public class MonitorSpeed extends Service implements LocationListener {
     private String DEFAULT_TITLE;
     private String DEFAULT_MESSAGE;
     private String WAITING_MESSAGE;
-    private int disabledCount = 0;
+    private String WAITING_TO_SLOWDOWN;
+    private int counter;
     private static boolean activated = false;
     private static boolean disabled = false;
     private static boolean running = false;
 
     @Override
     public void onLocationChanged(Location location) {
-        float distance = oldLocation.distanceTo(location);
+        float distance = (oldLocation.distanceTo(location) - location.getAccuracy());
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        // Disabled is used when no device is available to connect
-        if (distance >= triggerDistance && !activated && !disabled) {
-            bluetoothAdapter.enable();
-            activated = true;
-            changeMessage(WAITING_MESSAGE);
-            starTimer();
-        }else if(distance < triggerDistance && !activated && disabled) {
-            if ((++disabledCount) > 2)
-                disabled = false;
-        }
+
+        if(location.getAccuracy() > 0.0f)
+            if (distance > triggerDistance && !activated && !disabled) {
+                bluetoothAdapter.enable();
+                activated = true;
+                changeMessage(WAITING_MESSAGE);
+                starTimer();
+            }else if (disabled && distance < triggerDistance) {
+                if(++counter > 1) {
+                    disabled = false;
+                    changeMessage(DEFAULT_MESSAGE);
+                }
+            }
 
         oldLocation = location;
     }
@@ -81,6 +86,7 @@ public class MonitorSpeed extends Service implements LocationListener {
         DEFAULT_TITLE  = this.getString(R.string.app_name);
         DEFAULT_MESSAGE = this.getString(R.string.service_is_running);
         WAITING_MESSAGE = this.getString(R.string.waiting_device);
+        WAITING_TO_SLOWDOWN = this.getString(R.string.waiting_to_slowdown);
         activated = BluetoothAdapter.getDefaultAdapter().isEnabled();
         running = Boolean.FALSE;
     }
@@ -145,7 +151,7 @@ public class MonitorSpeed extends Service implements LocationListener {
     }
 
     private void starTimer() {
-        countDownTimer = new CountDownTimer(60000, 60000) {
+        countDownTimer = new CountDownTimer(30000, 30000) {
             public void onTick(long millisUntilFinished) {
             }
 
@@ -168,11 +174,20 @@ public class MonitorSpeed extends Service implements LocationListener {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
+        Intent stopIntent = new Intent(this, MainActivity.class);
+        stopIntent.putExtra("close", "close");
+        PendingIntent stopPendingIntent =
+                PendingIntent.getActivity(this, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         NotificationCompat.Builder note =
                 new NotificationCompat.Builder(this)
                         .setContentTitle(DEFAULT_TITLE)
                         .setContentText(message)
+                        .setAutoCancel(true)
+                        .setContentIntent(stopPendingIntent)
                         .setSmallIcon(R.drawable.ic_action_bluetooth);
+
+        note.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
 
         Notification notification = note.build();
         notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
@@ -193,9 +208,10 @@ public class MonitorSpeed extends Service implements LocationListener {
                 stopTimer();
                 changeMessage(DEFAULT_MESSAGE);
             }else if (activated && intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1) == BluetoothAdapter.STATE_OFF) {
-                disabledCount = 0;
+                counter = 0;
                 disabled = true;
                 activated = false;
+                changeMessage(WAITING_TO_SLOWDOWN);
             }
 
             oldLocation = lm.getLastKnownLocation(provider);

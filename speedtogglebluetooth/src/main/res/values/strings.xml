@@ -5,4 +5,5 @@
     <string name="service_already_running">Service already running</string>
     <string name="starting_service">Starting service</string>
     <string name="waiting_device">Waiting for device</string>
+    <string name="waiting_to_slowdown">Not on you car, waiting...</string>
 </resources>
