@@ -1,4 +1,4 @@
 Speed-Toggle-Bluetooth
 ======================
 
-Small application for turning on and off bluetooth based on speed
+Small android application for turning on and off bluetooth based on speed
