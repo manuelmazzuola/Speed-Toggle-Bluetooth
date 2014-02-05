@@ -119,7 +119,7 @@ public class MonitorSpeed extends Service implements LocationListener {
                 new NotificationCompat.Builder(getApplicationContext())
                         .setContentTitle(DEFAULT_TITLE)
                         .setContentText(DEFAULT_MESSAGE)
-                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setDefaults(Notification.DEFAULT_VIBRATE)
                         .setAutoCancel(true)
                         .setContentIntent(stopPendingIntent)
                         .setSmallIcon(R.drawable.ic_action_bluetooth)
